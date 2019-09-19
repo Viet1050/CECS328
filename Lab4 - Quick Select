@@ -1,0 +1,151 @@
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Scanner;
+
+public class Tester {
+	static Scanner scan = new Scanner(System.in);
+	static Random rand = new Random();
+	static int HIGH = 100;
+	static int LOW = -100;
+	
+	public static int partition(int[] a,int left, int right) {
+		// Call pivot function to place pivot and numbers correctly within the array
+		pivot(a,left,((left+right)/2),right);
+		
+		// Set the pivot value to the value at the right end of the array
+		// Set the rightPointer to the value to the left of the pivot index
+		// Set the leftPointer to the left end of the array 
+		int pivot = right;
+		int rightPointer = pivot-1;
+		int leftPointer = left;
+		
+		//while loop until left and right pointers cross
+		while(leftPointer < rightPointer) {
+			//Increment left pointer until the value is greater than the pivot value
+			while(a[leftPointer] < a[pivot]) {
+				//Check if leftPointer ever goes out of bounds
+				if(leftPointer < 0) {
+					leftPointer = 0;
+					break;
+				}
+				else {
+					leftPointer++;
+				}
+			}
+			//Decrement right pointer until the value is less than the pivot value
+			while(a[rightPointer] >= a[pivot]) {
+				//Check if rightPointer ever goes out of bounds
+				if(rightPointer == 0) {
+					rightPointer = 0;
+					break;
+				}
+				else {
+					rightPointer--;
+				}
+			}
+		
+			// Check if left and right pointer have crossed
+			if(leftPointer >= rightPointer) {
+				int tempPointer = a[pivot];
+				a[pivot] = a[leftPointer];
+				a[leftPointer] = tempPointer;
+			}
+			// Else swap the leftPointer and rightPointer values
+			else {
+				int tempPointer = a[rightPointer];
+				a[rightPointer] = a[leftPointer];
+				a[leftPointer] = tempPointer;
+			}
+		}
+		//return the index where the pivot was added back into the array
+		return leftPointer;
+	}
+	
+	public static int[] pivot(int[] a,int left, int mid, int right) {
+		int temp = 0;
+		//Check if the left value is the median and switch it with the right value
+		if((a[left] < a[mid] && a[left] > a[right]) || (a[left] > a[mid] && a[left] < a[right])){
+			temp = a[right];
+			a[right] = a[left];
+			a[left] = temp;			
+		}
+		//Check if the middle value is the median and switch it with the right value
+		else if((a[mid] < a[left] && a[mid] > a[right]) || (a[mid] > a[left] && a[mid] < a[right])) {
+			temp = a[right];
+			a[right] = a[mid];
+			a[mid] = temp;
+		}
+		//Else the right value is the median and no switching is needed
+		
+		return a;
+	}
+	public static int quickSelect(int[] a,int left,int right, int key) {
+		// Call the partition function to find the pivot and sort array
+		// and add pivot to the correct index, then set it to variable
+		// pivotIndex
+		int pivotIndex = partition(a,left,right);
+		
+		// Check if the key is equal to the pivotIndex, which would mean the pivot
+		// value is the value we are looking for 
+		if(key == pivotIndex) {
+			return pivotIndex;
+		}
+		
+		// If the pivotIndex is greater than the key index value, we call quickSelect
+		// on the left side of the pivotIndex
+		else if(key < pivotIndex) {
+			return quickSelect(a,left,pivotIndex-1,key);
+		}
+		
+		// If the pivotIndex is less than the key index value, we call quickSelect
+		// on the right side of the pivotIndex
+		else {
+			return quickSelect(a,pivotIndex+1,right,key);
+		}
+	}
+	
+	public static void main(String[] args) {
+		// Ask user to enter a positive number and use the input for the
+		// array size of array a
+		System.out.print("Enter a positive integer: ");
+		int n = scan.nextInt();
+
+		// Initialize array a of size n
+		int[] a = new int[n];
+		
+		//Generate n numbers between -100 and 100 and add them to the array
+		for (int i = 0; i < n; i++) {
+			int num = rand.nextInt(HIGH - LOW) + LOW;
+		 	a[i] = num;
+		}
+		
+
+		//Print the generated unsorted array
+		System.out.println(Arrays.toString(a));
+		System.out.println(" ");
+		
+		//Ask the user to enter a number between 1 and the size of the array and set it to variable key
+		System.out.print("Enter a number between 1 and " + n + ": ");
+		int key = scan.nextInt();
+		
+		//**********************PART A**********************
+		//Call quickSelect to find the value at the spot the user entered
+		System.out.println("Kth least Element: " + a[quickSelect(a,0,a.length-1,key-1)]);
+		System.out.println(" ");
+		
+		//**********************PART B**********************
+		//Ask user how many max elements they want
+		System.out.print("How many max elements do you want? ");
+		key = scan.nextInt();
+		
+		//Make variable to find the kth element
+		int maxKeys = a.length-key;
+		
+		//Print all the values to the right of the maxKeys value
+		System.out.print(key + " max elements: ");
+		int mid = quickSelect(a,0,a.length-1,maxKeys);
+		for(int i = mid; i<a.length; i++) {
+			System.out.print(a[i] + " "); 
+		}
+	}
+}
