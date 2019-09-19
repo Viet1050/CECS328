@@ -1,0 +1,283 @@
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Scanner;
+
+public class Tester {
+	static Scanner scan = new Scanner(System.in);
+	static Random rand = new Random();
+	static int HIGH = 100;
+	static int LOW = -100;
+	
+	public static int partition(int[] a,int left, int right) {
+		// Call pivot function to place pivot and numbers correctly within the array
+		pivot(a,left,((left+right)/2),right);
+		
+		// Set the pivot value to the value at the right end of the array
+		// Set the rightPointer to the value to the left of the pivot index
+		// Set the leftPointer to the left end of the array 
+		int pivot = right;
+		int rightPointer = pivot-1;
+		int leftPointer = left;
+		
+		//while loop until left and right pointers cross
+		while(leftPointer < rightPointer) {
+			//Increment left pointer until the value is greater than the pivot value
+			while(a[leftPointer] < a[pivot]) {
+				//Check if leftPointer ever goes out of bounds
+				if(leftPointer < 0) {
+					leftPointer = 0;
+					break;
+				}
+				else {
+					leftPointer++;
+				}
+			}
+			//Decrement right pointer until the value is less than the pivot value
+			while(a[rightPointer] >= a[pivot]) {
+				//Check if rightPointer ever goes out of bounds
+				if(rightPointer == 0) {
+					rightPointer = 0;
+					break;
+				}
+				else {
+					rightPointer--;
+				}
+			}
+		
+			// Check if left and right pointer have crossed
+			if(leftPointer >= rightPointer) {
+				int tempPointer = a[pivot];
+				a[pivot] = a[leftPointer];
+				a[leftPointer] = tempPointer;
+			}
+			// Else swap the leftPointer and rightPointer values
+			else {
+				int tempPointer = a[rightPointer];
+				a[rightPointer] = a[leftPointer];
+				a[leftPointer] = tempPointer;
+			}
+		}
+		//return the index where the pivot was added back into the array
+		return leftPointer;
+	}
+	
+	
+	
+	
+	public static int[] pivot(int[] a,int left, int mid, int right) {
+		int temp = 0;
+		//Check if the left value is the median and switch it with the right value
+		if((a[left] < a[mid] && a[left] > a[right]) || (a[left] > a[mid] && a[left] < a[right])){
+			temp = a[right];
+			a[right] = a[left];
+			a[left] = temp;			
+		}
+		//Check if the middle value is the median and switch it with the right value
+		else if((a[mid] < a[left] && a[mid] > a[right]) || (a[mid] > a[left] && a[mid] < a[right])) {
+			temp = a[right];
+			a[right] = a[mid];
+			a[mid] = temp;
+		}
+		//Else the right value is the median and no switching is needed
+		
+		return a;
+	}
+	
+	public static int quickSelect(int[] a,int left,int right, int key) {
+		// Call the partition function to find the pivot and sort array
+		// and add pivot to the correct index, then set it to variable
+		// pivotIndex
+		int pivotIndex = partition(a,left,right);
+		
+		// Check if the key is equal to the pivotIndex, which would mean the pivot
+		// value is the value we are looking for 
+		if(key == pivotIndex) {
+			return pivotIndex;
+		}
+		
+		// If the pivotIndex is greater than the key index value, we call quickSelect
+		// on the left side of the pivotIndex
+		else if(key < pivotIndex) {
+			return quickSelect(a,left,pivotIndex-1,key);
+		}
+		
+		// If the pivotIndex is less than the key index value, we call quickSelect
+		// on the right side of the pivotIndex
+		else {
+			return quickSelect(a,pivotIndex+1,right,key);
+		}
+	}
+
+	public static int partition2d(int[][] a,int left, int right) {
+		// Call pivot function to place pivot and numbers correctly within the array
+		pivot2d(a,left,((left+right)/2),right);
+		
+		// Set the pivot value to the value at the right end of the array
+		// Set the rightPointer to the value to the left of the pivot index
+		// Set the leftPointer to the left end of the array 
+		int pivot = right;
+		int rightPointer = pivot-1;
+		int leftPointer = left;
+		
+		//while loop until left and right pointers cross
+		while(leftPointer < rightPointer) {
+			//Increment left pointer until the value is greater than the pivot value
+			while(a[1][leftPointer] < a[1][pivot]) {
+				//Check if leftPointer ever goes out of bounds
+				if(leftPointer < 0) {
+					leftPointer = 0;
+					break;
+				}
+				else {
+					leftPointer++;
+				}
+			}
+			//Decrement right pointer until the value is less than the pivot value
+			while(a[1][rightPointer] >= a[1][pivot]) {
+				//Check if rightPointer ever goes out of bounds
+				if(rightPointer == 0) {
+					rightPointer = 0;
+					break;
+				}
+				else {
+					rightPointer--;
+				}
+			}
+		
+			// Check if left and right pointer have crossed
+			if(leftPointer >= rightPointer) {
+				int tempPointer = a[1][pivot];
+				a[1][pivot] = a[1][leftPointer];
+				a[1][leftPointer] = tempPointer;
+				
+				int temp1 = a[0][pivot];
+				a[0][pivot] = a[0][leftPointer];
+				a[0][leftPointer] = temp1;
+				
+			}
+			// Else swap the leftPointer and rightPointer values
+			else {
+				int tempPointer = a[1][rightPointer];
+				a[1][rightPointer] = a[1][leftPointer];
+				a[1][leftPointer] = tempPointer;
+				
+				int temp2 = a[0][rightPointer];
+				a[0][rightPointer] = a[0][leftPointer];
+				a[0][leftPointer] = temp2; 
+			}
+		}
+		//return the index where the pivot was added back into the array
+		return leftPointer;
+	}
+	
+	
+	
+	
+	public static int[][] pivot2d(int[][] a,int left, int mid, int right) {
+		int temp = 0;
+		//Check if the left value is the median and switch it with the right value
+		if((a[1][left] < a[1][mid] && a[1][left] > a[1][right]) || (a[1][left] > a[1][mid] && a[1][left] < a[1][right])){
+			temp = a[1][right];
+			a[1][right] = a[1][left];
+			a[1][left] = temp;	
+			
+			int temp3 = a[0][right];
+			a[0][right] = a[0][left];
+			a[0][left] = temp3;
+		}
+		//Check if the middle value is the median and switch it with the right value
+		else if((a[1][mid] < a[1][left] && a[1][mid] > a[1][right]) || (a[1][mid] > a[1][left] && a[1][mid] < a[1][right])) {
+			temp = a[1][right];
+			a[1][right] = a[1][mid];
+			a[1][mid] = temp;
+			
+			int temp3 = a[0][right];
+			a[0][right] = a[0][mid];
+			a[0][mid] = temp3;
+		}
+		//Else the right value is the median and no switching is needed
+		
+		return a;
+	}
+	
+	public static void quickSelect2d(int[][] a,int left,int right, int key) {
+		// Call the partition function to find the pivot and sort array
+		// and add pivot to the correct index, then set it to variable
+		// pivotIndex
+		int pivotIndex = partition2d(a,left,right);
+		
+		// Check if the key is equal to the pivotIndex, which would mean the pivot
+		// value is the value we are looking for 
+		if(key == pivotIndex) {
+			//return pivotIndex;
+		}
+		
+		// If the pivotIndex is greater than the key index value, we call quickSelect
+		// on the left side of the pivotIndex
+		else if(key < pivotIndex) {
+			quickSelect2d(a,left,pivotIndex-1,key);
+		}
+		
+		// If the pivotIndex is less than the key index value, we call quickSelect
+		// on the right side of the pivotIndex
+		else {
+			quickSelect2d(a,pivotIndex+1,right,key);
+		}
+	}
+
+	public static void main(String[] args) {
+		//1) Ask the user to enter the size of the array and save it into variable n
+		System.out.print("Enter a positive number: ");
+		int n = scan.nextInt();
+		
+		//Initialize array a of size n
+		int[] a = new int[n];
+				
+		//2) Generate n numbers between -100 and 100 and add them to the array a
+		for (int i = 0; i < n; i++) {
+			int num = rand.nextInt(HIGH - LOW) + LOW;
+			a[i] = num;
+		}
+		
+		//3) Print the generated unsorted array
+		System.out.println(Arrays.toString(a));
+		System.out.println(" ");
+		
+		//4) Ask the user to enter a number between 1 and n then save it into the variable k
+		System.out.print("Enter a number between 1 and " + n + ": ");
+		int k = scan.nextInt();
+		System.out.println("");
+		
+		//5) Find median of array a
+		int median = quickSelect(a,0,a.length-1,(a.length-1)/2);
+		System.out.println("Median: " + a[median]);
+		
+		//Initialize a 2d array called diff
+		int[][] diff = new int[2][n];
+		
+		//6 Subtract median value from each value in array a and add the abs value to diff
+		for(int i = 0; i < a.length; i++) {
+			int sub = a[i]-a[median];
+			diff[0][i] = sub;
+			diff[1][i] = Math.abs(sub);
+		}
+		
+		//switch value at the left end with the value at median index for both rows
+		int temp = diff[1][median];
+		diff[1][median] = diff[1][0];
+		diff[1][0] = temp;
+		
+		int temp2 = diff[0][median];
+		diff[0][median] = diff[0][0];
+		diff[0][0] = temp;
+		
+		//Call quickSelect and pass in the 2d array
+		quickSelect2d(diff,1,diff[1].length-1,k);
+		
+		//8) Shift k values back (+Median) and print the k closest
+		System.out.print(k + " closest values: ");
+		for(int j = 1; j<k+1;j++) {
+			System.out.print((diff[0][j]+a[median]) + " ");
+		}
+	}
+}
