@@ -1,0 +1,176 @@
+import java.util.Scanner;
+import java.util.*;
+import java.lang.Math;
+
+public class Tester {
+	static Scanner scan = new Scanner(System.in);
+	static int HIGH = 1000;
+	static int LOW = -1000;
+	static int TIMES = 100;
+	public static int linearSearch(int[] a,int key) {
+		//iterate through the array and compare each element to the key
+		for(int i = 0; i < a.length; i++) {
+			if(key == a[i]) {
+				//return the index of the element if it matches the key
+				return i;
+			}
+		}
+		//return a value that is not in the array if the key is not found in the array
+		return -1;
+	}
+	
+	public static int binarySearch(int[] a,int left,int right, int key) {
+		if(left <= right) {
+			//Find the mid value of the array
+			int mid = (left + right)/2;
+			
+			//check if the key value is the same as the value of the array at index mid
+			//If it is, return the mid value
+			if(a[mid] == key) {
+				return mid;
+			}
+			
+			//if the key is less than the value of the array at index mid, recursively calls the binarySearch function
+			//and changes the right value to the last value before mid
+			else if(key < a[mid]) {
+				return binarySearch(a,left,mid-1,key);
+			}
+			
+			//if the key is greater than the value of the array at index mid , recursively calls the binarySearch function
+			//and changes the left value to the next value after mid
+			else{
+				return binarySearch(a,mid+1,right,key);
+			}
+		}
+		//return a value that is not in the array if the key is not found in the array
+		return -1;
+	}
+	
+	public static void main(String[] args) {
+		//***************************PART A*******************************************************
+		//Get a positive number from the user and save the number into n
+        System.out.print("Enter a positive number: ");
+        int n = scan.nextInt();
+        
+        //Initialize the key,binaryTotalTime, and linearTotalTime variables
+        int key = 0;
+        double binaryTotalTime = 0;    
+        double linearTotalTime = 0;
+        
+        //Initialize array a 
+        int[] a = new int[n];
+        Random rand = new Random();
+        
+        //Create for loop to generate random numbers between -1000 and 1000 
+        //Then add the numbers to array a
+        for(int i = 0; i < n; i++) {
+            int num = rand.nextInt(HIGH - LOW) + LOW;
+            a[i] = num;
+        }
+        
+        //Sort the array a
+        Arrays.sort(a);
+        
+        for(int i = 0;i<TIMES;i++) {
+            //Set key to a random value in array a by generating a random index 
+            key = a[rand.nextInt(a.length-1)];
+            
+            //Set variable linearStart to the time when the linear search starts and call the lineaerSearch function
+            double linearStart = System.nanoTime();
+            linearSearch(a,key);
+            //Set variable linearStop to the time when the linear search is complete
+            double linearStop = System.nanoTime();
+            //calculate the time it took for the linear search to be completed by subtracting 
+            //the start time from the stop time and save the value into the variable linearTime
+            double linearTime = linearStop - linearStart;
+            //Keep a running total of the total time it takes to run the linear search 100 times
+            linearTotalTime += linearTime;
+            
+            //Set variable binaryStart to the time when the binary search starts and call the binarySearch function
+            double binaryStart = System.nanoTime();
+            binarySearch(a,0,a.length-1,key);
+            //Set variable binaryStop to the time when the binary search is complete
+            double binaryStop = System.nanoTime();           
+            //calculate the time it took for the binary search to be completed by subtracting 
+            //the start time from the stop time and save the value into the variable binaryTime
+            double binaryTime = binaryStop - binaryStart;            
+            //Keep a running total of the total time it takes to run the binary search 100 times
+            binaryTotalTime += binaryTime;
+        }
+        
+        //Calculate and return the average running times of both searches by dividing the total times by 100
+        System.out.println("Avg Binary time: " + binaryTotalTime/TIMES + " nanoseconds");
+        System.out.println("Avg Linear time: " + linearTotalTime/TIMES + " nanoseconds");
+        System.out.println(" ");
+        
+        //***************************PART B*******************************************************
+        
+        //Set variable n to 10^5
+        n = 100000;
+        //Set variable key to 5000 to ensure it is not in the array
+        key = 5000;
+        
+        //Populate the array a with n random numbers between -1000 and 1000
+        for(int i = 0; i < n; i++) {
+            int num = rand.nextInt(HIGH - LOW) + LOW;
+            a[i] = num;
+        }
+        
+        //Call both searches once and time the worst-case running time
+        double linearStart = System.nanoTime();
+        linearSearch(a,key);
+        double linearStop = System.nanoTime();
+        double linearTime = linearStop - linearStart;
+        
+        double binaryStart = System.nanoTime();
+        binarySearch(a,0,a.length-1,key);
+        double binaryStop = System.nanoTime();
+        double binaryTime = binaryStop - binaryStart;
+        
+        //Show the worst-case running times of both searches
+        System.out.println("Worst Binary time: " + binaryTime + " nanoseconds");
+        System.out.println("Worst Linear time: " + linearTime + " nanoseconds");
+        System.out.println(" ");
+        
+        //To find the time it takes to run one step of binarySearch, take the worst 
+        //case running time, binaryTime, and divide it by log(2) to convert it to base 2
+        //and divide it by log(n) because the array is size n so by dividing it by log(n)
+        //gives the time to execute a single line
+        double singleLineTime = binaryTime / (Math.log(n)/Math.log(2));
+        System.out.println("Time to run one step of binarySearch:  " + singleLineTime + " nanoseconds");
+        
+        
+        //Runtime of binary search is log(n) so to find the runtime ofbianrySearch of an array 
+        //of size 10^7, multiply the time it takes to run one line by 10^7 but we also need to 
+        //change the base to 2 so we divide by log(2) 
+        double binaryRunTime = (Math.log(Math.pow(10, 7))/Math.log(2)) * singleLineTime;
+        //Runtime of linear search is n so to find the runtime of linearSearch of an array 
+        //of size 10^7, multiply the time it takes to run one line by 10^7
+        double linearRunTime = Math.pow(10, 7) * singleLineTime;
+        
+        //Display the worst-case running times of binary and linear search of an array with 10^7 elements
+        System.out.println("Worst time taken to run Binary search for n = 10^7 is: "+ binaryRunTime + " nanoseconds");
+        System.out.println("Worst time taken to run Linear search for n = 10^7 is: "+ linearRunTime +  " nanoseconds");
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+	}
+}
