@@ -1,0 +1,335 @@
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Scanner;
+
+public class Tester {
+	static Scanner scan = new Scanner(System.in);
+	static Random rand = new Random();
+	static int HIGH = 19;
+	static int LOW = -19;
+	static double MIN = Double.POSITIVE_INFINITY;
+	
+	public static double[] decrementQuickSort(double[] a, int left, int right) {
+		// Check if array size is greater than one
+		if((right-left) > 1) {
+				// Call partition function to perform partition on array
+				// This function returns the index of where the pivot is
+				// in order for us to know where to call the left and right 
+				// recursive quickSort calls
+				int pivotPoint = decrementPartition(a,left,right);
+				
+				// Recursively call quickSort function for both the left and right sides 
+				// of the pivotPoint index
+				decrementQuickSort(a,left,pivotPoint-1);
+				decrementQuickSort(a,pivotPoint+1,right);
+		}
+		// Check if array size is 2
+		else if((right-left) == 1) {
+			if(a[left] < a[right]) {
+				double temp = a[left];
+				a[left] = a[right];
+				a[right] = temp;
+			}
+		}
+		return a;
+	}
+	
+	public static int decrementPartition(double[] a,int left,int right) {
+		// Call pivot function to place pivot and numbers correctly within the array
+		pivot(a,left,((left+right)/2),right);
+		
+		// Set the pivot value to the value at the right end of the array
+		// Set the rightPointer to the value to the left of the pivot index
+		// Set the leftPointer to the left end of the array 
+		int pivot = right;
+		int rightPointer = pivot-1;
+		int leftPointer = left;
+		
+		// While loop until left and right pointers cross
+		while(leftPointer < rightPointer) {
+			// Increment left pointer until the value is greater than the pivot value
+			while(a[leftPointer] > a[pivot]) {
+				// Check if leftPointer ever goes out of bounds
+				if(leftPointer < 0) {
+					leftPointer = 0;
+					break;
+				}
+				else {
+					leftPointer++;
+				}
+			}
+			// Decrement right pointer until the value is less than the pivot value
+			while(a[rightPointer] <= a[pivot]) {
+				// Check if rightPointer ever goes out of bounds
+				if(rightPointer == 0) {
+					rightPointer = 0;
+					break;
+				}
+				else {
+					rightPointer--;
+				}
+			}
+		
+			// Check if left and right pointer have crossed
+			if(leftPointer >= rightPointer) {
+				double tempPointer = a[pivot];
+				a[pivot] = a[leftPointer];
+				a[leftPointer] = tempPointer;
+			}
+			// Else swap the leftPointer and rightPointer values
+			else {
+				double tempPointer = a[rightPointer];
+				a[rightPointer] = a[leftPointer];
+				a[leftPointer] = tempPointer;
+			}
+		}
+		// Return the index where the pivot was added back into the array
+		return leftPointer;
+	}
+	
+	public static double[] pivot(double[] a,int left, int mid, int right) {
+		double temp = 0;
+		// Check if the left value is the median and switch it with the right value
+		if((a[left] < a[mid] && a[left] > a[right]) || (a[left] > a[mid] && a[left] < a[right])){
+			temp = a[right];
+			a[right] = a[left];
+			a[left] = temp;			
+		}
+		// Check if the middle value is the median and switch it with the right value
+		else if((a[mid] < a[left] && a[mid] > a[right]) || (a[mid] > a[left] && a[mid] < a[right])) {
+			temp = a[right];
+			a[right] = a[mid];
+			a[mid] = temp;
+		}
+		// Else the right value is the median and no switching is needed
+		return a;
+	}
+	
+	
+	public static double[] quickSort(double[] a, int left, int right) {
+		// Check if array size is greater than one
+		if((right-left) > 1) {
+		// Call partition function to perform partition on array
+		// This function returns the index of where the pivot is
+		// in order for us to know where to call the left and right 
+		// recursive quickSort calls
+		int pivotPoint = partition(a,left,right);
+						
+		// Recursively call quickSort function for both the left and right sides 
+		// of the pivotPoint index
+		quickSort(a,left,pivotPoint-1);
+		quickSort(a,pivotPoint+1,right);
+		}
+		
+		// Check if array size is 2
+		else if((right-left) == 1) {
+			if(a[left] > a[right]) {
+				double temp = a[left];
+				a[left] = a[right];
+				a[right] = temp;
+			}
+		}
+		return a;
+	}
+	
+	public static int partition(double[] a,int left, int right) {
+		// Call pivot function to place pivot and numbers correctly within the array
+		pivot(a,left,((left+right)/2),right);
+		
+		// Set the pivot value to the value at the right end of the array
+		// Set the rightPointer to the value to the left of the pivot index
+		// Set the leftPointer to the left end of the array 
+		int pivot = right;
+		int rightPointer = pivot-1;
+		int leftPointer = left;
+		
+		// While loop until left and right pointers cross
+		while(leftPointer < rightPointer) {
+			// Increment left pointer until the value is greater than the pivot value
+			while(a[leftPointer] < a[pivot]) {
+				// Check if leftPointer ever goes out of bounds
+				if(leftPointer < 0) {
+					leftPointer = 0;
+					break;
+				}
+				else {
+					leftPointer++;
+				}
+			}
+			// Decrement right pointer until the value is less than the pivot value
+			while(a[rightPointer] >= a[pivot]) {
+				// Check if rightPointer ever goes out of bounds
+				if(rightPointer == 0) {
+					rightPointer = 0;
+					break;
+				}
+				else {
+					rightPointer--;
+				}
+			}
+		
+			// Check if left and right pointer have crossed
+			if(leftPointer >= rightPointer) {
+				double tempPointer = a[pivot];
+				a[pivot] = a[leftPointer];
+				a[leftPointer] = tempPointer;
+			}
+			// Else swap the leftPointer and rightPointer values
+			else {
+				double tempPointer = a[rightPointer];
+				a[rightPointer] = a[leftPointer];
+				a[leftPointer] = tempPointer;
+			}
+		}
+		// Return the index where the pivot was added back into the array
+		return leftPointer;
+	}
+
+	public static double MPSS(double []a, int left, int right ) {
+        int middle = (left + right)/2;
+        
+        // If array size is one, return the value
+        if( left == right) {
+            return a[left];
+        }
+        
+        // If array size is two, return the min of the two values
+        else if ((right - left) == 1) {
+        	return Math.min(a[left], a[right]);
+        }
+        
+        // Otherwise, find the mpss of the left and right side of the array 
+        // as well as the mpss of the middle of the array
+        else {	
+        	double mpss_left = MPSS(a,left,middle);
+        	double mpss_right = MPSS(a,middle+1,right);
+        	double mpss_mid = MPSS_Mid(a,left,middle,right);
+        
+        	// Return the minimum of all three sums we find
+        	if((mpss_left > 0) && (mpss_right > 0) && (mpss_mid > 0)) {
+        		return Math.min(mpss_left, Math.min(mpss_right, mpss_mid));
+        	}
+        
+        	// If all values are zero, return one of the values 
+        	else if((mpss_left == 0) && (mpss_right == 0) && (mpss_mid == 0)) {
+        		return mpss_mid;
+        	}
+        
+        	// If all values are less than zero, return infinity
+        	else if((mpss_left < 0) && (mpss_right < 0) && (mpss_mid < 0)) {
+        		return MIN;
+        	}
+        	
+        	// Else compare the three values to each other, checking whoch values are zero and make sure that value 
+        	// isnt returned as the min
+        	else {
+        		// If mpss_left is the min and not zero
+        		if((mpss_left < mpss_right) && (mpss_left < mpss_mid) && (mpss_left > 0)) {
+        			return mpss_left;
+        		}
+        		
+        		// If mpss_right is the min and not zero
+        		else if((mpss_right < mpss_left) && (mpss_right < mpss_mid) && (mpss_right > 0)) {
+        			return mpss_right;
+        		}
+        		
+        		// If mpss_mid is not zero
+        		else if (mpss_mid > 0) {
+        			return mpss_mid;
+        		}
+        	}
+        	return 0;
+        }
+	}   
+        
+	public static double MPSS_Mid(double[] a, int left, int middle, int right) {
+		// Initialize arrays to store sums for left and right side of array
+        double [] Sl= new double [(middle-left)+1];
+        double [] Sr = new double [(right-middle)];
+        
+        // Initialize sums of both sides to 0
+        double slSum = 0;
+        double srSum = 0;
+        int lCount = 0;
+        int rCount = 0;
+        
+        // Iterate through left side of array, calculate the sums and store into Sl array 
+        for(int i = middle; i >= left; i--) {
+            slSum += a[i];
+            Sl[lCount++] = slSum;
+        }
+        
+        // Iterate through right side of array, calculate the sums and store into Sr array 
+        for (int i = middle+1; i <= right; i++) {
+            srSum += a[i];
+            Sr[rCount++] = srSum;
+        }
+        
+        // Create index variables to pass into the quicksort functions
+        int sr_left=0;
+        int sr_right=Sr.length-1;
+        int sl_left = 0;
+        int sl_right= Sl.length-1;
+        
+        // Sort Sr in descending order and Sl in ascending order
+        decrementQuickSort(Sr,sr_left,sr_right);
+        quickSort(Sl,sl_left,sl_right);
+        
+        // i index marker for Sl, j index marker for Sr
+        int i = 0; 
+        int j = 0;
+        
+        // Initialize the minimum sum to infinity to ensure there will be a smaller sum 
+        double sMin = MIN;
+        double mpss_middle=0;
+        
+        // iterate through the middle of the array until we exhaust all the values of one or both arrays
+        while((i <= Sl.length-1) && (j <= Sr.length-1)) {
+        	// Sum of values in Sl and Sr at indexes i and j
+            double s= Sl[i]+Sr[j];
+            
+            // If sum is negative, iterate i (Sl is sorted ascending)
+            if(s<=0) {
+                i++;
+            }
+            
+            // If sum is less than the current min, min becomes the value of s and we iterate j (Sr is sorted descending)
+            else if(s <sMin) {
+                sMin=s;
+                j++;
+            }
+            
+            // If sum is greater than current min, we iterate j (Sr is sorted descending)
+            else if(s>sMin){
+                j++;
+            }
+            
+            // Set middle sum to the min value we found and return it
+            mpss_middle= sMin;
+        }
+        return mpss_middle;
+    }
+	
+	
+	public static void main(String[] args) {
+		// Ask user for size of the array
+		System.out.print("Enter the size of the array: ");
+		int n = scan.nextInt();
+		
+		// Initialize an array of size n
+		double[] a = new double[n];
+		
+		// Generate n random numbers and store them into array a
+		for (int i = 0; i < n; i++) {
+			double num = (rand.nextInt(HIGH-LOW)+LOW)+((rand.nextInt(9))/10.0);
+			a[i] = num;
+		}
+		
+		// Print out original array
+		System.out.println("Orig: " + Arrays.toString(a));
+		
+		// Find and display the mpss of the array 
+		System.out.println(MPSS(a,0,a.length-1));
+
+	}
+}
