@@ -1,0 +1,201 @@
+import java.util.*;
+
+public class Tester {
+	static Scanner scan = new Scanner(System.in);
+	static Random rand = new Random();
+	static int AMOUNT = 100;
+	static int HIGH = 5000;
+	static int LOW = -5000;
+
+	public static int[] quickSort(int[] a, int left, int right) {
+		// Check if array size is greater than one
+		if((right-left) > 1) {
+		// Call partition function to perform partition on array
+		// This function returns the index of where the pivot is
+		// in order for us to know where to call the left and right 
+		// recursive quickSort calls
+		int pivotPoint = partition(a,left,right);
+						
+		//Recursively call quickSort function for both the left and right sides 
+		// of the pivotPoint index
+		quickSort(a,left,pivotPoint-1);
+		quickSort(a,pivotPoint+1,right);
+		}
+		//Check if array size is 2
+		else if((right-left) == 1) {
+			if(a[left] < a[right]) {
+				int temp = a[left];
+				a[left] = a[right];
+				a[right] = temp;
+			}
+		}
+		return a;
+	}
+	
+	public static int partition(int[] a,int left, int right) {
+		// Call pivot function to place pivot and numbers correctly within the array
+		pivot(a,left,((left+right)/2),right);
+		
+		// Set the pivot value to the value at the right end of the array
+		// Set the rightPointer to the value to the left of the pivot index
+		// Set the leftPointer to the left end of the array 
+		int pivot = right;
+		int rightPointer = pivot-1;
+		int leftPointer = left;
+		
+		//while loop until left and right pointers cross
+		while(leftPointer < rightPointer) {
+			//Increment left pointer until the value is greater than the pivot value
+			while(a[leftPointer] < a[pivot]) {
+				//Check if leftPointer ever goes out of bounds
+				if(leftPointer < 0) {
+					leftPointer = 0;
+					break;
+				}
+				else {
+					leftPointer++;
+				}
+			}
+			//Decrement right pointer until the value is less than the pivot value
+			while(a[rightPointer] >= a[pivot]) {
+				//Check if rightPointer ever goes out of bounds
+				if(rightPointer == 0) {
+					rightPointer = 0;
+					break;
+				}
+				else {
+					rightPointer--;
+				}
+			}
+		
+			// Check if left and right pointer have crossed
+			if(leftPointer >= rightPointer) {
+				int tempPointer = a[pivot];
+				a[pivot] = a[leftPointer];
+				a[leftPointer] = tempPointer;
+			}
+			// Else swap the leftPointer and rightPointer values
+			else {
+				int tempPointer = a[rightPointer];
+				a[rightPointer] = a[leftPointer];
+				a[leftPointer] = tempPointer;
+			}
+		}
+		//return the index where the pivot was added back into the array
+		return leftPointer;
+	}
+	
+	public static int[] pivot(int[] a,int left, int mid, int right) {
+		int temp = 0;
+		//Check if the left value is the median and switch it with the right value
+		if((a[left] < a[mid] && a[left] > a[right]) || (a[left] > a[mid] && a[left] < a[right])){
+			temp = a[right];
+			a[right] = a[left];
+			a[left] = temp;			
+		}
+		//Check if the middle value is the median and switch it with the right value
+		else if((a[mid] < a[left] && a[mid] > a[right]) || (a[mid] > a[left] && a[mid] < a[right])) {
+			temp = a[right];
+			a[right] = a[mid];
+			a[mid] = temp;
+		}
+		//Else the right value is the median and no switching is needed
+		
+		return a;
+	}
+
+
+
+
+	public static int[] insertionSort(int[] a) {
+		int temp = 0;
+		
+		// Iterate through the array
+		
+		// i is the first value
+		for (int i = 0; i < a.length; i++) {
+			// j is the value after i in the array
+			for (int j = 0; j < a.length; j++) {
+				// If the value at j is greater than at i, swap them
+				if (a[i] < a[j]) {
+					temp = a[i];
+					a[i] = a[j];
+					a[j] = temp;
+				}
+			}
+		}
+		return a;
+	}
+
+	public static void main(String[] args) {
+		double quickTotalTime = 0;
+		double insertTotalTime = 0;
+		// Ask user to enter a positive number and use the input for the
+		// array size of array a
+		System.out.print("Enter a positive integer: ");
+		int n = scan.nextInt();
+		System.out.println(" ");
+		
+
+		// Initialize array a of size n
+		int[] a = new int[n];
+		
+		//for loop to run the searches 100 times
+		for (int times = 0; times < AMOUNT; times++) {
+			// Populate array a with n random numbers between -5000 and 5000
+			for (int i = 0; i < n; i++) {
+			int num = rand.nextInt(HIGH - LOW) + LOW;
+		 	a[i] = num;
+			}
+		
+			// Set variable quickStart to the time when the quick sort starts and call the
+			// quickSort function
+			double quickStart = System.nanoTime();
+			quickSort(a, 0, a.length - 1);
+			 
+			// Set variable quickStop to the time when the quick sort is complete
+			double quickStop = System.nanoTime();
+		 
+			// calculate the time it took for the quick sort to be completed by subtracting
+			// the start time from the stop time and save the value into the variable
+			// quickTime
+			double quickTime = quickStop - quickStart;
+			// Keep a running total of the total time it takes to run the quick sort 100
+			// times
+			quickTotalTime += quickTime;
+		
+			// Set variable insertStart to the time when the insertion sort starts and call
+			// the insertionSort function
+			double insertStart = System.nanoTime();
+			insertionSort(a);
+			// Set variable insertStop to the time when the insertion sort is complete
+			double insertStop = System.nanoTime();
+			// calculate the time it took for the insertion sort to be completed by
+			// subtracting the start time from the stop time and save the value into the variable
+			// insertTime
+			double insertTime = insertStop - insertStart;
+			// Keep a running total of the total time it takes to run the insertion sort 100
+			// times
+			insertTotalTime += insertTime;
+		}
+		
+		// Calculate and return the average running times of both sorts by dividing the
+		// total times by the amount of times we ran each sort
+		System.out.println("Average Quick Sort Time: " + quickTotalTime / AMOUNT + " nanoseconds");
+		System.out.println("Average Insertion Sort Time: " + insertTotalTime / AMOUNT
+		+ " nanoseconds");
+		System.out.println(" ");
+		
+		
+		
+		//Calculate the amount of instructions insertion sort can perform in one second
+        int growth = n*n;
+        int NANO2SEC= 1000000000;
+        //Convert the insertion sort total time into seconds
+        double insertTotalTimeSec= insertTotalTime/ NANO2SEC;
+        //Divide the total time in seconds by the growth
+        double lineTime = (insertTotalTimeSec / growth);
+        double instrPerSec = 1 / lineTime;
+        System.out.println("Insert Sort instructions per Second: " + instrPerSec + " instructions");
+	}
+}
