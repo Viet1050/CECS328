@@ -1,0 +1,147 @@
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Scanner;
+
+public class Tester {
+	static Scanner scan = new Scanner(System.in);
+	static Random rand = new Random();
+	static int MIN = -10000;
+	static int MAX = 10000;
+	static int ITERATIONS = 100;
+	    
+	public static void selectionSort(int[] a) {
+		// Iterate through the array, comparing each value to all the values in the array
+		// and switching if the value is greater than the ones were comparing it with
+		// after each iteration of j we swap i with j because j is the new min
+	    for (int i = 0; i < a.length; i++) {
+	    	int min = i;
+	        for (int j = i+1; j < a.length; j++) {
+	        	if(a[j] < a[i]) {
+	        		min = j;
+	        	}
+	        // Switch values at i and j
+	        int temp = a[i];
+	        a[i] = a[j];
+	        a[j] = temp;
+	        }
+	    }    
+	}
+	    
+	public static void heapSort(int[] a) {
+		// Build a Max Heap
+		buildMaxHeap(a);    
+		// Start at end of the array and decrement
+	    for(int i= a.length-1; i>=0;i--) {
+	    	// Swap the value at i with the first value
+	    	int temp = a[0];
+	        a[0] = a[i];
+	        a[i] = temp;
+	        // Call max heapify (index is 0 and i is array size)
+	        maxHeapify(a,i,0);
+	    }        
+	}
+	public static void buildMaxHeap(int[] a) {
+		int n = a.length-1; 
+		// Start at n/2 because thats the first full node
+	    for (int i = n/2; i >= 0; i--) {
+	        maxHeapify(a,n, i);
+	    } 
+	}
+	public static void maxHeapify(int[] a,int arraySize, int index) {
+	        int left = 2 * index + 1;
+	        int right = 2 * index + 2;
+	        int max = index;
+	        // If left is less than n and a[left] is grater than a[max]
+	        // then left is the new max
+	        if (left < arraySize)
+	        	if(a[left] > a[max]) {
+	        		max = left;
+	        }
+	        // If right is less than n and a[right] is grater than a[max]
+	        // then right is the new max
+	        if (right < arraySize)
+	        	if(a[right] > a[max]) {
+	        		max = right;    
+	        }
+	        // Swap max with the index after doing all the comparisons
+	        if (max != index) {
+	            int temp = a[index];
+	            a[index] = a[max];
+	            a[max] = temp;
+	            maxHeapify(a,arraySize, max);
+	        }
+	    }
+	public static void main(String[] args) {
+		// PART A
+		System.out.println("--------------PART A--------------");
+		// Ask user to enter the size of the array
+		System.out.print("Enter a positive integer: ");
+		int n = scan.nextInt();
+		
+		// Initialize an array of the user inputed size
+		int[] a = new int[n];
+		double heapTotalTime = 0.00;
+		// Perform Heap Sort 100 times
+		for(int i=0; i< ITERATIONS;i++) {
+			// Populate array with random numbers
+			for (int j = 0; j < n; j++) {
+				int num = rand.nextInt(MAX - MIN) + MIN;
+				a[j] = num;
+			}
+			// Record the time the Heap Sort begins
+	        double heapStart = System.nanoTime();
+	        heapSort(a);
+	        // Record the time the Heap Sort ends
+	        double heapStop = System.nanoTime();
+	        // Subtract the start time from the stop time to get the runtime of the sort
+	        double heapTime = heapStop - heapStart;
+	        // Add the time to the total amount of time taken to run Heap Sort 100 times
+	        heapTotalTime += heapTime;
+	    }
+		// Divide the total heap sort time by the amount of iterations to find the avg time
+	    System.out.println("     Heap Sort Avg Time is : " + heapTotalTime / ITERATIONS + " Nanoseconds ");
+	    
+	    double selectionTotalTime = 0.00;
+	    // Perform Selection Sort 100 times
+	    for(int i=0; i< ITERATIONS;i++) {
+	    	// Populate array with random numbers
+	    	for (int j = 0; j < n; j++) {
+				int num = rand.nextInt(MAX - MIN) + MIN;
+				a[j] = num;
+			}
+	    	// Record the time the Selection Sort begins
+	        double selectionStart = System.nanoTime();
+	        selectionSort(a);
+	        // Record the time the Selection Sort ends
+	        double selectionStop = System.nanoTime();
+	        // Subtract the start time from the stop time to get the runtime of the sort
+	        double selectionTime = selectionStop - selectionStart;
+	        // Add the time to the total amount of time taken to run Selection Sort 100 times
+	        selectionTotalTime += selectionTime;
+	    }
+	    // Divide the total selection sort time by the amount of iterations to find the avg time
+	    System.out.println("Selection Sort Avg Time is : " + selectionTotalTime / ITERATIONS + " Nanoseconds ");
+	    System.out.println("");
+	   
+	    // PART B
+	    System.out.println("--------------PART B--------------");
+	    // Create a new array of size 10 and populate with random numbers between -10000 and 10000
+	    int []b = new int[10];   
+	    for (int j = 0; j < 10; j++) {
+			int num = rand.nextInt(MAX - MIN) + MIN;
+			b[j] = num;
+		}
+	    // Print array before heap sort
+	    System.out.println("Before Heap Sort");
+	    System.out.println(Arrays.toString(b));
+	    heapSort(b);
+	    // Print array after heap sort
+	    System.out.println("After Heap Sort");
+	    System.out.println(Arrays.toString(b));
+	 
+	        
+	        
+	    }
+	    
+
+	}
